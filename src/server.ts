@@ -18,14 +18,10 @@ const firebaseConfig = {
     console.log('Firebase initialized successfully')
   }catch(e){
     console.log('Failed', e);
-  }
-    
-  
-  
+  }  
 
 const server=app.listen(port,() => {
-    console.log('listening on port', port);
-    
+    console.log('listening on port', port);    
 })
 
 process.on('SIGINT', () => {
