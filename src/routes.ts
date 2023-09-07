@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
         .once('value')
         .then((data: any) => {
             database = data.val();
-            res.send({ 'Resultado da consulta ao Banco de Dados': database });
+            res.send({ 'comments': database });
         });
 });
 
@@ -21,14 +21,14 @@ router.get('/', (req, res) => {
 router.post('/update', (req, res) => {
     res.header("Access-Control-Allow-Origin", "*");
     //remover aspas
-    let feedback = 'req.body.feedback';
-    let email = 'req.body.email'; 
+    let feedback = req.body.feedback;
+    let email = req.body.email;
     console.log('just one test');
     //usei apenas para testes
     let json = {
         'Feedback_do_ADM': 'Se você chegou até aqui, as rotas de GET e POST estão funcionando corretamente, porque no momento em que a rota "update" foi acessada, este JSON foi salvo com sucesso'
     };
-    
+
     // Mandar para o Firebase sempre um JSON
     const REF = firebase.database().ref(`Feedbacks/${btoa(email)}`);
 
@@ -37,7 +37,6 @@ router.post('/update', (req, res) => {
             let ID = REF.key;
             const UPDATE = firebase.database().ref(`Feedbacks/${btoa(email)}`).update({ 'ID': ID })
                 .then(() => {
-                    res.send({ 'messagem do ADM': 'DEU BOM' });
                     console.log('Updated');
                 })
                 .catch(err => { console.log(err); });
