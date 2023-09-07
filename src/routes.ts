@@ -3,45 +3,46 @@ import * as firebase from 'firebase';
 
 export const router = Router();
 
-
-router.get('/greg', (req, res) => {
-    //res.send('API do Greg está funcionando')
-
-    let database: any
+router.get('/', (req, res) => {
+    // res.send('API do Greg está funcionando')
+    let database: any;
     firebase
         .database()
         .ref(`Feedbacks`)
         .orderByKey()
         .once('value')
-        .then((datas: any) => {
-            database = datas.val()
-            
-            res.send({ 'Messagem do ADM': database })
-        })
-})
+        .then((data: any) => {
+            database = data.val();
+            res.send({ 'Resultado da consulta ao Banco de Dados': database });
+        });
+});
 
 
-router.get('/update', (req, res) => {
+router.post('/update', (req, res) => {
     res.header("Access-Control-Allow-Origin", "*");
-    console.log('just one test')
+    //remover aspas
+    let feedback = 'req.body.feedback';
+    let email = 'req.body.email'; 
+    console.log('just one test');
+    //usei apenas para testes
     let json = {
         'Feedback_do_ADM': 'Se você chegou até aqui, as rotas de GET e POST estão funcionando corretamente, porque no momento em que a rota "update" foi acessada, este JSON foi salvo com sucesso'
-    }
+    };
     
+    // Mandar para o Firebase sempre um JSON
+    const REF = firebase.database().ref(`Feedbacks/${btoa(email)}`);
 
-    firebase
-        .database()
-        .ref(`Feedbacks`).set(json)
-        .then((sucess) => { 
-            console.log('Updated')
+    REF.set({ 'feedback': feedback, 'email': email })
+        .then(() => {
+            let ID = REF.key;
+            const UPDATE = firebase.database().ref(`Feedbacks/${btoa(email)}`).update({ 'ID': ID })
+                .then(() => {
+                    res.send({ 'messagem do ADM': 'DEU BOM' });
+                    console.log('Updated');
+                })
+                .catch(err => { console.log(err); });
         })
-        .catch((err) => { console.log(err) });
-    res.send({ 'messagem do ADM': 'DEU BOM' })
-
-    
-        
-})
-    
-
-
-
+        .catch((err: any) => {
+            console.log(err);
+        });
+});

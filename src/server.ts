@@ -1,5 +1,4 @@
 import {app} from './app';
-import { initializeApp } from "firebase/app";
 import * as firebase from 'firebase';
 
 const port = process.env.PORT || 8000
@@ -14,8 +13,13 @@ const firebaseConfig = {
     appId: "1:66507653258:web:7bc9212dc4278debca2d73"
   };
 
+  try{
     firebase.initializeApp(firebaseConfig)
     console.log('Firebase initialized successfully')
+  }catch(e){
+    console.log('Failed', e);
+  }
+    
   
   
 
